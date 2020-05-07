@@ -20,8 +20,12 @@ public class FaceDirectionSystem : SystemBase
             ForEach((ref MoveData moveData, ref Rotation rot, in Translation pos, in TargetData targetData) =>
             {
                 ComponentDataFromEntity<Translation> allTranslations = GetComponentDataFromEntity<Translation>(true);
-                Translation targetPos = allTranslations[targetData.targetEntity];
+                if (!allTranslations.Exists(targetData.targetEntity))
+                {
+                    return;
+                }
 
+                Translation targetPos = allTranslations[targetData.targetEntity];
                 float3 dirToTarget = targetPos.Value - pos.Value;
                 moveData.direction = dirToTarget;
                 FaceDirection(ref rot, moveData);
